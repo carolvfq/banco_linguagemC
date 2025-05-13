@@ -48,6 +48,40 @@ int main(){
 }
 
 void menu(){
+    printf("escolha uma das opçoes:");
+    printf("1-Criar conta:\n");
+    printf("2-Efetuar saque:\n");
+    printf("3-Efetuar deposito:\n");
+    printf("4-Efetuar transferencia:\n");
+    printf("5-Listar contas:\n");
+    
+    int opcoes;
+    scanf("%d",&opcoes);
+    
+    switch (opcoes)
+    {
+    
+    case 1:
+        criarConta();
+        break;
+    case 2:
+        efetuarSaque();
+        break;
+    case 3:
+        efetuarDeposito();
+        break;
+    case 4:
+        efetuarTansferencia();
+        break; 
+    case 5:
+        listarContas();
+        break;    
+    
+        
+    default:
+    printf("opcao invalida.\n");
+        break;
+    }
 
 }
 void infoCliente(Cliente cliente){
