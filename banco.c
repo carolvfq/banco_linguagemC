@@ -129,8 +129,33 @@ Conta buscarContaPorNumero(int numero){
              }
         }
     }
+    return C;
 }
 void sacar(Conta conta, float valor){
+    if(valor > 0 && conta.saldoTotal > 0){
+        for(int i=0; i < contador_contas;i++){
+            if(contas[i].numero ==conta.numero ){
+                if(valor < contas[i].saldo){
+                    contas[i].saldo=contas[i].saldo - valor;
+                    contas[i].saldoTotal=atualizaSaldoTotal(contas[i]);
+                    printf("saque realizado com sucesso!\n");
+                }
+                else{
+                    float restante = contas[i].saldo - valor;
+                    contas[i].limite= contas[i].limite + restante;
+                    contas[i].saldo=0.0;
+                    contas[i].saldoTotal=atualizaSaldoTotal(contas[i]);
+                    printf("saque realizado com sucesso!\n");
+                }
+
+            }
+        }
+        
+
+    }
+    else{
+        printf(" o Saque nao foi realizado");
+    }
 
 }
 void depositar(Conta conta, float valor){
