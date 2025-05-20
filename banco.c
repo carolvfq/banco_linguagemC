@@ -17,9 +17,9 @@ typedef struct{
 typedef struct{
     int numero;
     Cliente cliente;
-     int saldo;
-     int limite;
-     int saldoTotal;
+     float saldo;
+     float limite;
+     float saldoTotal;
 }Conta;
 
 
@@ -37,8 +37,8 @@ void sacar(Conta conta, float valor);
 void depositar(Conta conta, float valor);
 void transferir(Conta conta_origem, Conta conta_destino, float valor);
 
-static contador_contas=0;
-static contador_clientes=0;
+static int contador_contas=0;
+static int contador_clientes=0;
 static Conta contas[50];
 
 int main(){
@@ -48,10 +48,10 @@ int main(){
 }
 
 void menu(){
-    printf("---------------------------------");
-    printf("--------------BANCO--------------");
-    printf("---------------------------------");
-    printf("escolha uma das opçoes:");
+    printf("---------------------------------\n");
+    printf("--------------BANCO--------------\n");
+    printf("---------------------------------\n");
+    printf("escolha uma das opçoes:\n");
     printf("1-Criar conta\n");
     printf("2-Efetuar saque\n");
     printf("3-Efetuar deposito\n");
@@ -98,7 +98,7 @@ void infoCliente(Cliente cliente){
     printf("Nome: %s\n Codigo:%d\n CPF:  %s\n email:%s\n Data de nascimento %s\n Data do cadastro: %s\n", cliente.nome, cliente.codigo, cliente.cpf, cliente.email,cliente.dataNascimento,cliente.dataCadastro );
 }
 void infoConta(Conta conta){
-    printf("Nome:%s\n CPF:%s\nNumero:%d\n Saldo:%d\n Limite:%d\n  Saldo Total:%d\n",conta.cliente.nome,conta.cliente.cpf,conta.numero,conta.saldo,conta.saldoTotal);
+    printf("Nome:%s\n CPF:%s\nNumero:%d\n Saldo:%f\n Limite:%f\n  Saldo Total:%f\n",conta.cliente.nome,conta.cliente.cpf,conta.numero,conta.saldo,conta.limite,conta.saldoTotal);
 
 }
 void criarConta(){
@@ -140,9 +140,16 @@ struct tm tm = *localtime(&t);
   strcpy(cliente.dataCadastro, data_cadastro);
 
 
+ //criar conta 
 
+ contas[contador_contas].numero= contador_contas + 1;
+ contas[contador_contas].cliente=cliente;
+ contas[contador_contas].saldo=0.0;
+ contas[contador_contas].limite=0.0;
+ contas[contador_contas].saldoTotal= 0.0;
+ contador_contas++;
 
-
+ Sleep(4000);
 
  printf("Informe os dados do cliente:\n");
  cliente.codigo= contador_clientes + 1;
@@ -164,17 +171,106 @@ struct tm tm = *localtime(&t);
  contador_clientes ++;
 
 }
-void efetuarSaque(){
+void efetuarSaque() {
+    if (contador_contas > 0) {
+        int numero;
+        printf("Digite o numero da conta: ");
+        scanf("%d", &numero);
 
+        Conta conta = buscarContaPorNumero(numero);
+
+        if (conta.numero == numero) {
+            float valor;
+            printf("Informe o valor do saque: ");
+            scanf("%f", &valor);  
+
+            sacar(conta, valor);
+        } else {
+            printf("Conta nao encontrada\n");
+        }
+    } else {
+        printf("Ainda não há nenhuma conta criada\n");
+    }
+
+    Sleep(2000);
+    menu();
 }
+
 void efetuarDeposito(){
+if (contador_contas > 0) {
+        int numero;
+        printf("Digite o numero da conta: ");
+        scanf("%d", &numero);
+
+        Conta conta = buscarContaPorNumero(numero);
+
+        if (conta.numero == numero) {
+            float valor;
+            printf("Informe o valor para deposito: ");
+            scanf("%f", &valor);  
+
+            depositar(conta, valor);
+        } else {
+            printf("Conta nao encontrada\n");
+        }
+    } else {
+        printf("Ainda não há nenhuma conta criada\n");
+    }
+
+    Sleep(2000);
+    menu();
 
 }
-void efetuarTansferencia(){
+void efetuarTansferencia() {
+    if (contador_contas > 0) {
+        int numero_o;
+        int numero_d;
+        printf("Digite o numero da sua conta:\n");
+        scanf("%d", &numero_o);
 
+        Conta conta_o = buscarContaPorNumero(numero_o);
+
+        if (conta_o.numero == numero_o) {
+            printf("Digite o numero da conta destino:\n");
+            scanf("%d", &numero_d);
+
+            Conta conta_d = buscarContaPorNumero(numero_d);
+
+            if (conta_d.numero == numero_d) {
+                float valor;
+                printf("Informe o valor para a transferencia: ");
+                scanf("%f", &valor);
+
+                transferir(conta_o, conta_d, valor);
+            } else {
+                printf("A conta destino nao foi encontrada\n");
+            }
+        } else {
+            printf("A sua conta nao foi encontrada\n");
+        }
+    } else {
+        printf("Ainda não há nenhuma conta criada\n");
+    }
+
+    Sleep(2000);
+    menu();
 }
+
 void listarContas(){
+    if(contador_contas> 0){
+        for(int i = 0 ; i < contador_contas; i++){
+        infoConta(contas[i]);
+        printf("\n");
+        Sleep(1000);
+        }
 
+}
+else{ 
+ printf("Ainda não há nenhuma conta criada\n");
+}
+
+Sleep(2000);
+menu();
 }
 float atualizaSaldoTotal(Conta conta){
     return conta.saldo + conta.limite;
