@@ -102,6 +102,66 @@ void infoConta(Conta conta){
 
 }
 void criarConta(){
+ Cliente cliente;
+ char dia[3];
+ char mes[3];
+ char ano[3];
+ char data_cadastro[20];
+ time_t t = time(NULL);
+struct tm tm = *localtime(&t);
+    // dia
+   if(tm.tm_mday <10){
+    sprintf(dia, "0%d", tm.tm_mday);
+
+ }
+   else{
+    sprintf(dia, "%d", tm.tm_mday);
+   }
+
+   //mês
+   if((tm.tm_mon +1)< 10){
+    sprintf(dia, "0%d", tm.tm_mon + 1);
+   }
+
+   else{
+    sprintf(dia, "%d", tm.tm_mon + 1);
+   }
+   //ano
+   sprintf(dia, "%d", tm.tm_year + 1900); //pq a biblioteca diminui 1900 do ano , então precisa repor
+
+  // concatenar tudo
+
+  strcpy(data_cadastro,"");
+  strcat(data_cadastro, "/");
+  strcat(data_cadastro, mes);
+  strcat(data_cadastro, "/");
+  strcat(data_cadastro, ano);
+  strcat(data_cadastro, "\0");
+  strcpy(cliente.dataCadastro, data_cadastro);
+
+
+
+
+
+
+ printf("Informe os dados do cliente:\n");
+ cliente.codigo= contador_clientes + 1;
+
+ printf("Nome do cliente:");
+ fgets(cliente.nome,50,stdin);
+
+ printf("CPF:");
+ fgets(cliente.cpf,20,stdin);
+
+
+ printf("Email:");
+ fgets(cliente.email,50,stdin);
+
+
+ printf("Data de nascimento:");
+ fgets(cliente.dataNascimento,20,stdin);
+
+ contador_clientes ++;
 
 }
 void efetuarSaque(){
@@ -132,7 +192,7 @@ Conta buscarContaPorNumero(int numero){
     return C;
 }
 void sacar(Conta conta, float valor){
-    if(valor > 0 && conta.saldoTotal > 0){
+    if(valor > 0 && conta.saldoTotal >= valor){
         for(int i=0; i < contador_contas;i++){
             if(contas[i].numero ==conta.numero ){
                 if(valor < contas[i].saldo){
@@ -159,10 +219,72 @@ void sacar(Conta conta, float valor){
 
 }
 void depositar(Conta conta, float valor){
+    if(valor > 0 ){
+        for(int i=0; i < contador_contas;i++){
+            if(contas[i].numero ==conta.numero ){
+                contas[i].saldo= contas[i].saldo + valor;
+                contas[i].saldoTotal=atualizaSaldoTotal(contas[i]);
+                    printf("deposito realizado com sucesso!\n");
+                
+               
+                }
 
+            }
+        }
+    else{
+        printf(" o Saque nao foi realizado");
+    }
 }
+
 void transferir(Conta conta_origem, Conta conta_destino, float valor){
+    if(valor > 0 && conta_origem.saldoTotal >= valor){
+        for(int co=0; co< contador_contas;co++){
+            if(contas[co].numero ==conta_origem.numero  ){
+                for(int cd=0; cd < contador_contas;cd++){
+                    if(contas[cd].numero ==conta_destino.numero ){
+                        if(valor < contas[co].saldo){
+                            contas[co].saldo=contas[co].saldo - valor;
+                            contas[cd].saldo=contas[cd].saldo + valor;
+                            contas[co].saldoTotal=atualizaSaldoTotal(contas[co]);
+                            contas[cd].saldoTotal=atualizaSaldoTotal(contas[cd]);
+                            printf("a transferencia foi  realizado com sucesso!\n");
+                        }
+                        else{
+                            float restante = contas[co].saldo - valor;
+                            contas[co].limite= contas[co].limite + restante;
+                            contas[co].saldo=0.0;
+                            contas[cd].saldo=contas[cd].saldo + valor;
+                            contas[co].saldoTotal=atualizaSaldoTotal(contas[co]);
+                            contas[cd].saldoTotal=atualizaSaldoTotal(contas[cd]);
+                            printf("a transferencia foi  realizado com sucesso!\n");
 
+                        }
+
+                    
+                    }
+
+                }
+
+            }
+
+
+        }
+    }
+    else{
+        printf("a transferencia nao foi realizada com sucesso\n");
+    }
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
+    
